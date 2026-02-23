@@ -69,6 +69,13 @@ body {
     gap: 12px;
 }
 
+.nav-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
 .logo h1 {
     font-size: 1.5rem;
     font-weight: 600;
