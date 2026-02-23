@@ -1,15 +1,15 @@
 :root {
     --bg-dark: #000000;
-    --card-bg: rgba(26, 26, 26, 0.4);
-    --card-border: rgba(255, 255, 255, 0.15);
-    --accent-blue: #ffffff;
-    --accent-green: #ffffff;
+    --card-bg: #050505;
+    --card-border: #3b0a17;
+    --accent-primary: #bf0f3b;
+    --accent-dark: #8a0b29;
     --text-primary: #ffffff;
-    --text-secondary: #999999;
-    --danger: #ffffff;
-    --macro-pro: #eeeeee;
-    --macro-carb: #cccccc;
-    --macro-fat: #777777;
+    --text-secondary: #888888;
+    --danger: #bf0f3b;
+    --macro-pro: #bf0f3b;
+    --macro-carb: #a3a3a3;
+    --macro-fat: #555555;
     --font-main: 'Outfit', sans-serif;
 }
 
@@ -28,10 +28,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image:
-        radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.04), transparent 30%),
-        radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02), transparent 30%);
-    background-attachment: fixed;
+    background-image: none;
+    background-attachment: scroll;
 }
 
 .hidden {
@@ -41,12 +39,10 @@ body {
 /* Glassmorphism utility */
 .glass-card {
     background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--card-border);
-    border-radius: 24px;
+    border-radius: 20px;
     padding: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
 }
 
 .glass-header {
@@ -113,36 +109,41 @@ section h2 {
 /* Buttons */
 button {
     font-family: var(--font-main);
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: 26px;
+    padding: 14px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .primary-btn {
-    background: #ffffff;
-    color: #000;
+    background: var(--accent-primary);
+    color: #ffffff;
     width: 100%;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+    box-shadow: none;
 }
 
 .primary-btn:hover {
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
+    background: var(--accent-dark);
     transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(191, 15, 59, 0.3);
 }
 
 .secondary-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
+    border: 1px solid var(--card-border);
     color: var(--text-primary);
     width: 100%;
     margin-top: 12px;
 }
 
 .secondary-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent-primary);
+    background: rgba(191, 15, 59, 0.05);
 }
 
 /* Upload Section */
@@ -167,8 +168,8 @@ button {
 
 .drop-zone:hover,
 .drop-zone.dragover {
-    border-color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent-primary);
+    background: rgba(191, 15, 59, 0.05);
 }
 
 .drop-content {
@@ -183,7 +184,7 @@ button {
 }
 
 .drop-content p span {
-    color: #ffffff;
+    color: var(--accent-primary);
     font-weight: 600;
     text-decoration: underline;
 }
@@ -222,9 +223,9 @@ button {
 .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid rgba(191, 15, 59, 0.1);
     border-radius: 50%;
-    border-top-color: #ffffff;
+    border-top-color: var(--accent-primary);
     animation: spin 1s ease-in-out infinite;
     margin-bottom: 16px;
 }
@@ -262,7 +263,7 @@ button {
 }
 
 .macro-card.cal {
-    border-left-color: var(--accent-green);
+    border-left-color: var(--accent-primary);
 }
 
 .macro-card.pro {
@@ -415,8 +416,8 @@ button {
 }
 
 .meal-cals {
-    font-weight: 600;
-    color: #ffffff;
+    font-weight: 700;
+    color: var(--text-primary);
     white-space: nowrap;
 }
 
@@ -462,5 +463,5 @@ button {
 }
 
 .form-group input:focus {
-    border-color: var(--accent-blue);
+    border-color: var(--accent-primary);
 }

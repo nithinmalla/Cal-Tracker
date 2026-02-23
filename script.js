@@ -426,7 +426,7 @@ function initChart() {
             labels: ['Consumed', 'Remaining'],
             datasets: [{
                 data: [0, GOALS.calories],
-                backgroundColor: ['#ffffff', 'rgba(255, 255, 255, 0.15)'],
+                backgroundColor: ['#bf0f3b', '#1a050a'],
                 borderWidth: 0,
                 cutout: '80%'
             }]
