@@ -1,15 +1,15 @@
 :root {
-    --bg-dark: #0f0f0f;
-    --card-bg: rgba(26, 26, 26, 0.6);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --accent-blue: #00f0ff;
-    --accent-green: #00ff88;
+    --bg-dark: #000000;
+    --card-bg: rgba(26, 26, 26, 0.4);
+    --card-border: rgba(255, 255, 255, 0.15);
+    --accent-blue: #ffffff;
+    --accent-green: #ffffff;
     --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --danger: #ff4757;
-    --macro-pro: #ff6b81;
-    --macro-carb: #eccc68;
-    --macro-fat: #ff7f50;
+    --text-secondary: #999999;
+    --danger: #ffffff;
+    --macro-pro: #eeeeee;
+    --macro-carb: #cccccc;
+    --macro-fat: #777777;
     --font-main: 'Outfit', sans-serif;
 }
 
@@ -28,9 +28,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: 
-        radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
-        radial-gradient(circle at 85% 30%, rgba(0, 255, 136, 0.05), transparent 25%);
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.04), transparent 30%),
+        radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02), transparent 30%);
     background-attachment: fixed;
 }
 
@@ -72,9 +72,7 @@ body {
 .logo h1 {
     font-size: 1.5rem;
     font-weight: 600;
-    background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-primary);
 }
 
 .icon-btn {
@@ -118,14 +116,14 @@ button {
 }
 
 .primary-btn {
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+    background: #ffffff;
     color: #000;
     width: 100%;
-    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
 }
 
 .primary-btn:hover {
-    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
 }
 
@@ -160,9 +158,10 @@ button {
     overflow: hidden;
 }
 
-.drop-zone:hover, .drop-zone.dragover {
-    border-color: var(--accent-blue);
-    background: rgba(0, 240, 255, 0.05);
+.drop-zone:hover,
+.drop-zone.dragover {
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .drop-content {
@@ -177,7 +176,8 @@ button {
 }
 
 .drop-content p span {
-    color: var(--accent-blue);
+    color: #ffffff;
+    font-weight: 600;
     text-decoration: underline;
 }
 
@@ -217,13 +217,15 @@ button {
     height: 40px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    border-top-color: var(--accent-green);
+    border-top-color: #ffffff;
     animation: spin 1s ease-in-out infinite;
     margin-bottom: 16px;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Results Section */
@@ -252,10 +254,21 @@ button {
     border-left: 4px solid transparent;
 }
 
-.macro-card.cal { border-left-color: var(--accent-green); }
-.macro-card.pro { border-left-color: var(--macro-pro); }
-.macro-card.carb { border-left-color: var(--macro-carb); }
-.macro-card.fat { border-left-color: var(--macro-fat); }
+.macro-card.cal {
+    border-left-color: var(--accent-green);
+}
+
+.macro-card.pro {
+    border-left-color: var(--macro-pro);
+}
+
+.macro-card.carb {
+    border-left-color: var(--macro-carb);
+}
+
+.macro-card.fat {
+    border-left-color: var(--macro-fat);
+}
 
 .macro-card .label {
     font-size: 0.85rem;
@@ -354,9 +367,17 @@ button {
     width: 0%;
 }
 
-#proBar { background: var(--macro-pro); }
-#carbBar { background: var(--macro-carb); }
-#fatBar { background: var(--macro-fat); }
+#proBar {
+    background: var(--macro-pro);
+}
+
+#carbBar {
+    background: var(--macro-carb);
+}
+
+#fatBar {
+    background: var(--macro-fat);
+}
 
 /* Log List */
 .meal-list {
@@ -388,7 +409,8 @@ button {
 
 .meal-cals {
     font-weight: 600;
-    color: var(--accent-green);
+    color: #ffffff;
+    white-space: nowrap;
 }
 
 /* Modal */
