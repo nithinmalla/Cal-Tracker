@@ -124,5 +124,68 @@
     "carbs_per_100g": 18,
     "fat_per_100g": 19,
     "image": "https://images.unsplash.com/photo-1599599810769-bcfe5a160d77?auto=format&fit=crop&w=400"
+  },
+  "water": {
+    "calories_per_100g": 0,
+    "protein_per_100g": 0,
+    "carbs_per_100g": 0,
+    "fat_per_100g": 0,
+    "image": "https://images.unsplash.com/photo-1559839913-114cb9008bc3?auto=format&fit=crop&w=400"
+  },
+  "milk": {
+    "calories_per_100g": 42,
+    "protein_per_100g": 3.4,
+    "carbs_per_100g": 5,
+    "fat_per_100g": 1,
+    "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=400"
+  },
+  "orange juice": {
+    "calories_per_100g": 45,
+    "protein_per_100g": 0.7,
+    "carbs_per_100g": 10.4,
+    "fat_per_100g": 0.2,
+    "image": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?auto=format&fit=crop&w=400"
+  },
+  "apple juice": {
+    "calories_per_100g": 46,
+    "protein_per_100g": 0.1,
+    "carbs_per_100g": 11.3,
+    "fat_per_100g": 0.1,
+    "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=400"
+  },
+  "coffee": {
+    "calories_per_100g": 1,
+    "protein_per_100g": 0.1,
+    "carbs_per_100g": 0,
+    "fat_per_100g": 0,
+    "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=400"
+  },
+  "tea": {
+    "calories_per_100g": 1,
+    "protein_per_100g": 0,
+    "carbs_per_100g": 0.2,
+    "fat_per_100g": 0,
+    "image": "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=400"
+  },
+  "soda": {
+    "calories_per_100g": 41,
+    "protein_per_100g": 0,
+    "carbs_per_100g": 10.6,
+    "fat_per_100g": 0,
+    "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400"
+  },
+  "beer": {
+    "calories_per_100g": 43,
+    "protein_per_100g": 0.5,
+    "carbs_per_100g": 3.6,
+    "fat_per_100g": 0,
+    "image": "https://images.unsplash.com/photo-1518176258769-f227c798150e?auto=format&fit=crop&w=400"
+  },
+  "wine": {
+    "calories_per_100g": 83,
+    "protein_per_100g": 0.1,
+    "carbs_per_100g": 2.6,
+    "fat_per_100g": 0,
+    "image": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=400"
   }
 }
