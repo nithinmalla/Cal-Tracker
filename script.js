@@ -9,8 +9,8 @@ let currentAnalysis = null;
 let mobilenetModel = null;
 
 // Constants
-const GOALS = {
-    calories: 2000,
+let GOALS = {
+    calories: parseInt(localStorage.getItem('auracal_goal_cals')) || 2000,
     protein: 150,
     carbs: 200,
     fat: 65
@@ -47,6 +47,12 @@ const els = {
 
     currentDate: document.getElementById('currentDate'),
     totalCal: document.getElementById('totalCal'),
+    goalText: document.getElementById('goalText'),
+    goalDisplayMode: document.getElementById('goalDisplayMode'),
+    goalEditMode: document.getElementById('goalEditMode'),
+    goalInput: document.getElementById('goalInput'),
+    editGoalBtn: document.getElementById('editGoalBtn'),
+    saveGoalBtn: document.getElementById('saveGoalBtn'),
     totalPro: document.getElementById('totalPro'),
     totalCarb: document.getElementById('totalCarb'),
     totalFat: document.getElementById('totalFat'),
@@ -166,6 +172,43 @@ function setupEventListeners() {
             resetUpload();
         }
     });
+
+    // Goal Editing
+    els.editGoalBtn.addEventListener('click', () => {
+        els.goalDisplayMode.classList.add('hidden');
+        els.goalEditMode.classList.remove('hidden');
+        els.goalInput.value = GOALS.calories;
+        els.goalInput.focus();
+    });
+
+    els.saveGoalBtn.addEventListener('click', saveGoal);
+    els.goalInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') saveGoal();
+    });
+}
+
+function saveGoal() {
+    const newGoal = parseInt(els.goalInput.value);
+    if (!isNaN(newGoal) && newGoal > 0) {
+        GOALS.calories = newGoal;
+        localStorage.setItem('auracal_goal_cals', newGoal);
+        els.goalText.textContent = `/ ${newGoal} kcal`;
+        els.goalEditMode.classList.add('hidden');
+        els.goalDisplayMode.classList.remove('hidden');
+
+        // Update Chart
+        if (chartInstance) {
+            let totals = { calories: 0 };
+            dailyLog.forEach(m => totals.calories += m.calories);
+            chartInstance.data.datasets[0].data = [
+                Math.round(totals.calories),
+                Math.max(0, GOALS.calories - Math.round(totals.calories))
+            ];
+            chartInstance.update();
+        }
+    } else {
+        alert("Please enter a valid calorie goal.");
+    }
 }
 
 // Image Handling
@@ -443,6 +486,7 @@ function updateUI() {
     });
 
     els.totalCal.textContent = Math.round(totals.calories);
+    els.goalText.textContent = `/ ${GOALS.calories} kcal`;
     els.totalPro.textContent = `${Math.round(totals.protein)}g`;
     els.totalCarb.textContent = `${Math.round(totals.carbs)}g`;
     els.totalFat.textContent = `${Math.round(totals.fat)}g`;
