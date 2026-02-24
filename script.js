@@ -379,7 +379,7 @@ function updateUI() {
         li.className = 'meal-item';
         const time = new Date(meal.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        const imgHtml = meal.image ? `<img src="${meal.image}" alt="${meal.food_name}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; margin-right: 14px; flex-shrink: 0;">` : `<div style="width: 44px; height: 44px; border-radius: 8px; background: rgba(255,255,255,0.1); margin-right: 14px; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">🍽️</div>`;
+        const imgHtml = meal.image ? `<img src="${meal.image}" alt="${meal.food_name}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; margin-right: 14px; flex-shrink: 0; box-shadow: 2px 2px 4px var(--shadow-dark);">` : `<div style="width: 44px; height: 44px; border-radius: 8px; background: var(--bg-dark); box-shadow: inset 2px 2px 4px var(--shadow-dark); margin-right: 14px; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">🍽️</div>`;
 
         li.innerHTML = `
             <div style="display: flex; align-items: center; overflow: hidden;">
@@ -426,8 +426,9 @@ function initChart() {
             labels: ['Consumed', 'Remaining'],
             datasets: [{
                 data: [0, GOALS.calories],
-                backgroundColor: ['#bf0f3b', '#1a050a'],
+                backgroundColor: ['#2e2842', '#e2e8f0'],
                 borderWidth: 0,
+                borderRadius: 4,
                 cutout: '80%'
             }]
         },
