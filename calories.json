@@ -1,93 +1,128 @@
 {
   "samosa": {
-    "calories": 250,
-    "protein": 3,
-    "carbs": 24,
-    "fat": 15,
+    "calories_per_100g": 262,
+    "protein_per_100g": 3.4,
+    "carbs_per_100g": 24,
+    "fat_per_100g": 17,
     "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400"
   },
-  "butter_chicken": {
-    "calories": 490,
-    "protein": 30,
-    "carbs": 14,
-    "fat": 35,
+  "butter chicken": {
+    "calories_per_100g": 175,
+    "protein_per_100g": 11,
+    "carbs_per_100g": 5,
+    "fat_per_100g": 12,
     "image": "https://images.unsplash.com/photo-1603894584373-5ac82b6ae398?auto=format&fit=crop&w=400"
   },
   "naan": {
-    "calories": 260,
-    "protein": 8,
-    "carbs": 44,
-    "fat": 5,
+    "calories_per_100g": 310,
+    "protein_per_100g": 9.5,
+    "carbs_per_100g": 51,
+    "fat_per_100g": 6,
     "image": "https://images.unsplash.com/photo-1626082895617-2c6afcbdf021?auto=format&fit=crop&w=400"
   },
-  "chicken_tikka_masala": {
-    "calories": 450,
-    "protein": 30,
-    "carbs": 15,
-    "fat": 25,
+  "chicken tikka masala": {
+    "calories_per_100g": 160,
+    "protein_per_100g": 11,
+    "carbs_per_100g": 5,
+    "fat_per_100g": 9,
     "image": "https://images.unsplash.com/photo-1565557612140-5bb9564f9f70?auto=format&fit=crop&w=400"
   },
-  "paneer_butter_masala": {
-    "calories": 400,
-    "protein": 15,
-    "carbs": 12,
-    "fat": 32,
+  "paneer butter masala": {
+    "calories_per_100g": 220,
+    "protein_per_100g": 8,
+    "carbs_per_100g": 7,
+    "fat_per_100g": 18,
     "image": "https://images.unsplash.com/photo-1631452180519-c014fe946bc3?auto=format&fit=crop&w=400"
   },
+  "ice cream": {
+    "calories_per_100g": 207,
+    "protein_per_100g": 3.5,
+    "carbs_per_100g": 23.6,
+    "fat_per_100g": 11,
+    "image": "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?auto=format&fit=crop&w=400"
+  },
   "rice": {
-    "calories": 205,
-    "protein": 4,
-    "carbs": 45,
-    "fat": 0.5,
+    "calories_per_100g": 130,
+    "protein_per_100g": 2.7,
+    "carbs_per_100g": 28,
+    "fat_per_100g": 0.3,
     "image": "https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?auto=format&fit=crop&w=400"
   },
-  "paneer_tikka": {
-    "calories": 270,
-    "protein": 15,
-    "carbs": 10,
-    "fat": 20,
+  "paneer tikka": {
+    "calories_per_100g": 150,
+    "protein_per_100g": 8,
+    "carbs_per_100g": 5.5,
+    "fat_per_100g": 11,
     "image": "https://images.unsplash.com/photo-1599487405270-b28c030bb7dc?auto=format&fit=crop&w=400"
   },
-  "chole_bhature": {
-    "calories": 550,
-    "protein": 12,
-    "carbs": 65,
-    "fat": 25,
+  "chole bhature": {
+    "calories_per_100g": 275,
+    "protein_per_100g": 6,
+    "carbs_per_100g": 32,
+    "fat_per_100g": 12.5,
     "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400"
   },
-  "masala_dosa": {
-    "calories": 420,
-    "protein": 8,
-    "carbs": 60,
-    "fat": 16,
+  "masala dosa": {
+    "calories_per_100g": 140,
+    "protein_per_100g": 2.6,
+    "carbs_per_100g": 20,
+    "fat_per_100g": 5.3,
     "image": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=400"
   },
   "biryani": {
-    "calories": 400,
-    "protein": 18,
-    "carbs": 55,
-    "fat": 12,
+    "calories_per_100g": 160,
+    "protein_per_100g": 7.2,
+    "carbs_per_100g": 22,
+    "fat_per_100g": 4.8,
     "image": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400"
   },
   "apple": {
-    "calories": 95,
-    "protein": 0.5,
-    "carbs": 25,
-    "fat": 0.3,
+    "calories_per_100g": 52,
+    "protein_per_100g": 0.3,
+    "carbs_per_100g": 14,
+    "fat_per_100g": 0.2,
     "image": "https://images.unsplash.com/photo-1560806887-1e4cd0b6fac6?auto=format&fit=crop&w=400"
   },
   "banana": {
-    "calories": 105,
-    "protein": 1.3,
-    "carbs": 27,
-    "fat": 0.3,
+    "calories_per_100g": 89,
+    "protein_per_100g": 1.1,
+    "carbs_per_100g": 23,
+    "fat_per_100g": 0.3,
     "image": "https://images.unsplash.com/photo-1571501679680-de32f1e7aad4?auto=format&fit=crop&w=400"
   },
   "egg": {
-    "calories": 78,
-    "protein": 6,
-    "carbs": 0.6,
-    "fat": 5,
+    "calories_per_100g": 155,
+    "protein_per_100g": 13,
+    "carbs_per_100g": 1.1,
+    "fat_per_100g": 11,
     "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=400"
+  },
+  "pizza": {
+    "calories_per_100g": 266,
+    "protein_per_100g": 11,
+    "carbs_per_100g": 33,
+    "fat_per_100g": 10,
+    "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400"
+  },
+  "hamburger": {
+    "calories_per_100g": 295,
+    "protein_per_100g": 14,
+    "carbs_per_100g": 24,
+    "fat_per_100g": 16,
+    "image": "https://images.unsplash.com/photo-1514326640560-7d063ef8a1c5?auto=format&fit=crop&w=400"
+  },
+  "french fries": {
+    "calories_per_100g": 312,
+    "protein_per_100g": 3.4,
+    "carbs_per_100g": 41,
+    "fat_per_100g": 15,
+    "image": "https://images.unsplash.com/photo-1576107246227-897db6746401?auto=format&fit=crop&w=400"
+  },
+  "hot dog": {
+    "calories_per_100g": 290,
+    "protein_per_100g": 11,
+    "carbs_per_100g": 18,
+    "fat_per_100g": 19,
+    "image": "https://images.unsplash.com/photo-1599599810769-bcfe5a160d77?auto=format&fit=crop&w=400"
   }
 }

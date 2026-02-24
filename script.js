@@ -3,10 +3,10 @@ let localDB = {};
 
 // Application State
 let dailyLog = [];
-let apiKey = localStorage.getItem('auracal_apikey') || '';
 let chartInstance = null;
 let currentPreviewBase64 = null;
 let currentAnalysis = null;
+let mobilenetModel = null;
 
 // Constants
 const GOALS = {
@@ -18,22 +18,26 @@ const GOALS = {
 
 // DOM Elements
 const els = {
-    settingsBtn: document.getElementById('settingsBtn'),
-    settingsModal: document.getElementById('settingsModal'),
-    apiKeyInput: document.getElementById('apiKey'),
-    saveSettingsBtn: document.getElementById('saveSettingsBtn'),
-    closeSettingsBtn: document.getElementById('closeSettingsBtn'),
-
     dropZone: document.getElementById('dropZone'),
     fileInput: document.getElementById('fileInput'),
     cameraBtn: document.getElementById('cameraBtn'),
     imagePreview: document.getElementById('imagePreview'),
     analyzeBtn: document.getElementById('analyzeBtn'),
+    manualEntryBtn: document.getElementById('manualEntryBtn'),
     loadingOverlay: document.getElementById('loadingOverlay'),
 
-    resultSection: document.getElementById('resultSection'),
+    inputSection: document.getElementById('inputSection'),
     foodNameTitle: document.getElementById('foodNameTitle'),
-    foodQuantity: document.getElementById('foodQuantity'),
+    foodConfidence: document.getElementById('foodConfidence'),
+    manualFoodLabel: document.getElementById('manualFoodLabel'),
+    manualFoodName: document.getElementById('manualFoodName'),
+    portionGrams: document.getElementById('portionGrams'),
+    calculateBtn: document.getElementById('calculateBtn'),
+    cancelInputBtn: document.getElementById('cancelInputBtn'),
+
+    resultSection: document.getElementById('resultSection'),
+    resultTitle: document.getElementById('resultTitle'),
+    resultGrams: document.getElementById('resultGrams'),
     resCal: document.getElementById('resCal'),
     resPro: document.getElementById('resPro'),
     resCarb: document.getElementById('resCarb'),
@@ -101,20 +105,6 @@ function checkMidnightReset() {
 
 // Event Listeners
 function setupEventListeners() {
-    // Settings
-    els.settingsBtn.addEventListener('click', () => {
-        els.apiKeyInput.value = apiKey;
-        els.settingsModal.classList.remove('hidden');
-    });
-
-    els.closeSettingsBtn.addEventListener('click', () => els.settingsModal.classList.add('hidden'));
-
-    els.saveSettingsBtn.addEventListener('click', () => {
-        apiKey = els.apiKeyInput.value.trim();
-        localStorage.setItem('auracal_apikey', apiKey);
-        els.settingsModal.classList.add('hidden');
-    });
-
     // Upload
     els.dropZone.addEventListener('click', (e) => {
         if (e.target !== els.cameraBtn) els.fileInput.click();
@@ -148,11 +138,21 @@ function setupEventListeners() {
         els.fileInput.removeAttribute('capture');
     });
 
-    els.analyzeBtn.addEventListener('click', analyzeImage);
+    els.analyzeBtn.addEventListener('click', analyzeImageLocal);
 
-    // Result
+    // Manual fallback triggering
+    els.manualEntryBtn.addEventListener('click', () => {
+        showManualEntry();
+    });
+
+    // Inputs & Calculations
+    els.calculateBtn.addEventListener('click', calculateNutritionLocal);
+    els.cancelInputBtn.addEventListener('click', resetUpload);
+
+    // Results
     els.cancelMealBtn.addEventListener('click', () => {
-        resetUpload();
+        els.resultSection.classList.add('hidden');
+        els.inputSection.classList.remove('hidden');
     });
 
     els.logMealBtn.addEventListener('click', () => {
@@ -164,13 +164,6 @@ function setupEventListeners() {
             });
             saveState();
             resetUpload();
-        }
-    });
-
-    // Close modal on outside click
-    window.addEventListener('click', (e) => {
-        if (e.target === els.settingsModal) {
-            els.settingsModal.classList.add('hidden');
         }
     });
 }
@@ -192,8 +185,9 @@ function handleFile(file) {
 }
 
 function compressImage(img) {
-    const MAX_WIDTH = 800;
-    const MAX_HEIGHT = 800;
+    // MobileNet prefers smaller sizes, 224x224 is standard, but keeping slightly larger for user preview
+    const MAX_WIDTH = 500;
+    const MAX_HEIGHT = 500;
     let width = img.width;
     let height = img.height;
 
@@ -223,6 +217,11 @@ function compressImage(img) {
     els.imagePreview.src = base64Str;
     els.imagePreview.classList.remove('hidden');
     els.analyzeBtn.classList.remove('hidden');
+
+    // Lazy load the model in the background right after an image is added, to speed up classification
+    if (!mobilenetModel) {
+        loadModel();
+    }
 }
 
 function resetUpload() {
@@ -231,129 +230,176 @@ function resetUpload() {
     els.imagePreview.src = '';
     els.imagePreview.classList.add('hidden');
     els.analyzeBtn.classList.add('hidden');
+    els.inputSection.classList.add('hidden');
     els.resultSection.classList.add('hidden');
     els.fileInput.value = '';
+
+    els.manualFoodLabel.classList.add('hidden');
+    els.manualFoodName.classList.add('hidden');
+    els.manualFoodName.value = '';
+    els.portionGrams.value = '';
 }
 
-// AI Analysis
-async function analyzeImage() {
-    if (!apiKey) {
-        alert('Please set your OpenAI API Key in settings first.');
-        els.settingsModal.classList.remove('hidden');
-        return;
+// TFJS Local AI Models
+async function loadModel() {
+    if (mobilenetModel) return;
+    try {
+        console.log('Loading MobileNet...');
+        mobilenetModel = await mobilenet.load();
+        console.log('MobileNet Loaded');
+    } catch (e) {
+        console.error("Failed to load MobileNet model", e);
     }
+}
 
+async function analyzeImageLocal() {
     if (!currentPreviewBase64) return;
 
     els.loadingOverlay.classList.remove('hidden');
     els.analyzeBtn.disabled = true;
 
     try {
-        const base64Data = currentPreviewBase64.split(',')[1];
-
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o',
-                messages: [
-                    {
-                        role: 'system',
-                        content: `You are an expert nutritionist AI. Analyze the food image. Provide a conservative estimate of calories and macros.
-Assume Indian food possibilities if spicy/curry looking. 
-If multiple foods, list the primary one only.
-You MUST return ONLY strictly structured JSON:
-{
-  "food_name": "Name of food",
-  "estimated_quantity": "e.g., 1 bowl or 200g",
-  "calories": 0,
-  "protein": 0,
-  "carbs": 0,
-  "fat": 0
-}`
-                    },
-                    {
-                        role: 'user',
-                        content: [
-                            { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Data}`, detail: 'low' } }
-                        ]
-                    }
-                ],
-                max_tokens: 300,
-                response_format: { type: "json_object" }
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+        if (!mobilenetModel) {
+            await loadModel();
         }
 
-        const data = await response.json();
-        const content = data.choices[0].message.content;
-        let parsed = JSON.parse(content);
+        const imgEl = new Image();
+        imgEl.src = currentPreviewBase64;
+        await new Promise(r => imgEl.onload = r); // Wait for image to load to memory
 
-        // Ensure numbers
-        parsed.calories = Number(parsed.calories) || 0;
-        parsed.protein = Number(parsed.protein) || 0;
-        parsed.carbs = Number(parsed.carbs) || 0;
-        parsed.fat = Number(parsed.fat) || 0;
-        parsed.image = currentPreviewBase64;
+        // Classify the image.
+        const predictions = await mobilenetModel.classify(imgEl);
 
-        showResult(parsed);
+        console.log('Predictions: ', predictions);
+
+        if (predictions && predictions.length > 0) {
+            // Get the highest confidence result
+            const topResult = predictions[0];
+            const confidence = (topResult.probability * 100).toFixed(1);
+
+            // Extract a cleaner label (often returns comma-separated varieties, e.g. "Granny Smith, apple")
+            let label = topResult.className.split(',')[0].trim().toLowerCase();
+
+            // Check if confidence is exceedingly low
+            if (topResult.probability < 0.1) {
+                showManualEntry("Food not confidently detected. Please enter manually.");
+            } else {
+                showInputForm(label, confidence);
+            }
+        } else {
+            showManualEntry("No objects detected. Please enter manually.");
+        }
 
     } catch (error) {
-        console.error(error);
-        if (confirm('AI analysis failed. Fallback to local database estimation?')) {
-            fallbackEstimation();
-        }
+        console.error("TFJS Error:", error);
+        showManualEntry("Image processing failed. Please enter manually.");
     } finally {
         els.loadingOverlay.classList.add('hidden');
         els.analyzeBtn.disabled = false;
     }
 }
 
-function fallbackEstimation() {
-    const foodName = prompt("Could not detect image (or API error). Enter food name:");
-    if (!foodName) return;
+function showInputForm(detectedLabel, confidenceStr) {
+    els.inputSection.classList.remove('hidden');
+    els.resultSection.classList.add('hidden');
 
-    const key = foodName.toLowerCase().replace(/ /g, '_');
-    let entry = localDB[key];
+    els.foodNameTitle.textContent = detectedLabel.charAt(0).toUpperCase() + detectedLabel.slice(1);
+    els.foodConfidence.textContent = confidenceStr ? `Detection confidence: ${confidenceStr}%` : "Manual Entry";
 
-    if (!entry) {
-        // Find partial match
-        const dbKey = Object.keys(localDB).find(k => k.includes(key) || key.includes(k));
-        if (dbKey) entry = localDB[dbKey];
+    // Hide manual food name input, show clear portion requests
+    els.manualFoodLabel.classList.add('hidden');
+    els.manualFoodName.classList.add('hidden');
+    els.manualFoodName.value = detectedLabel; // Store it hidden so calculation knows what to match
+    els.portionGrams.value = '';
+    els.portionGrams.focus();
+
+    // Scroll for mobile
+    els.inputSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showManualEntry(message = "Enter food manually") {
+    els.inputSection.classList.remove('hidden');
+    els.resultSection.classList.add('hidden');
+
+    els.foodNameTitle.textContent = "Manual Entry";
+    els.foodConfidence.textContent = message;
+
+    els.manualFoodLabel.classList.remove('hidden');
+    els.manualFoodName.classList.remove('hidden');
+    els.manualFoodName.value = '';
+    els.portionGrams.value = '';
+    els.manualFoodName.focus();
+}
+
+function calculateNutritionLocal() {
+    let foodQuery = els.manualFoodName.value.trim().toLowerCase();
+    const grams = parseFloat(els.portionGrams.value);
+
+    if (!foodQuery) {
+        alert("Please provide a food name.");
+        return;
     }
 
-    if (entry) {
-        showResult({
-            food_name: foodName,
-            estimated_quantity: "1 standard serving",
-            calories: entry.calories,
-            protein: entry.protein,
-            carbs: entry.carbs,
-            fat: entry.fat,
-            image: entry.image || ''
-        });
+    if (isNaN(grams) || grams <= 0) {
+        alert("Please enter a valid portion size in grams.");
+        return;
+    }
+
+    // Fuzzy Match to local database
+    let matchedEntry = null;
+    let dbKeyUsed = foodQuery;
+
+    if (localDB[foodQuery]) {
+        matchedEntry = localDB[foodQuery];
     } else {
-        alert("Food not found in local database.");
+        // Find partial match
+        const dbKey = Object.keys(localDB).find(k => k.includes(foodQuery) || foodQuery.includes(k));
+        if (dbKey) {
+            matchedEntry = localDB[dbKey];
+            dbKeyUsed = dbKey;
+            console.log(`Matched '${foodQuery}' to '${dbKey}' in DB`);
+        }
     }
+
+    if (!matchedEntry) {
+        alert(`Sorry, "${foodQuery}" is not in our local database yet. Please try another common name (e.g. apple, pizza, rice).`);
+        return;
+    }
+
+    // Calculate macros based on grams
+    const multiplier = grams / 100;
+
+    const calResult = Math.round(matchedEntry.calories_per_100g * multiplier);
+    const proResult = Math.round((matchedEntry.protein_per_100g * multiplier) * 10) / 10;
+    const carbResult = Math.round((matchedEntry.carbs_per_100g * multiplier) * 10) / 10;
+    const fatResult = Math.round((matchedEntry.fat_per_100g * multiplier) * 10) / 10;
+
+    // Show results
+    showResult({
+        food_name: dbKeyUsed.charAt(0).toUpperCase() + dbKeyUsed.slice(1),
+        estimated_quantity: `${grams}g`,
+        calories: calResult,
+        protein: proResult,
+        carbs: carbResult,
+        fat: fatResult,
+        image: currentPreviewBase64 || matchedEntry.image || ''
+    });
 }
 
 function showResult(data) {
     currentAnalysis = data;
-    els.foodNameTitle.textContent = data.food_name || 'Unknown Food';
-    els.foodQuantity.textContent = `Estimated portion: ${data.estimated_quantity || '-'}`;
+
+    els.inputSection.classList.add('hidden');
+    els.resultSection.classList.remove('hidden');
+
+    els.resultTitle.textContent = data.food_name;
+    els.resultGrams.textContent = `For ${data.estimated_quantity}`;
 
     els.resCal.textContent = data.calories;
     els.resPro.textContent = data.protein;
     els.resCarb.textContent = data.carbs;
     els.resFat.textContent = data.fat;
 
-    els.resultSection.classList.remove('hidden');
     els.resultSection.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -390,16 +436,16 @@ function updateUI() {
                 </div>
             </div>
             <div class="meal-cals">
-                ${meal.calories} kcal
+                ${Math.round(meal.calories)} kcal
             </div>
         `;
         els.mealList.appendChild(li);
     });
 
-    els.totalCal.textContent = totals.calories;
-    els.totalPro.textContent = `${totals.protein}g`;
-    els.totalCarb.textContent = `${totals.carbs}g`;
-    els.totalFat.textContent = `${totals.fat}g`;
+    els.totalCal.textContent = Math.round(totals.calories);
+    els.totalPro.textContent = `${Math.round(totals.protein)}g`;
+    els.totalCarb.textContent = `${Math.round(totals.carbs)}g`;
+    els.totalFat.textContent = `${Math.round(totals.fat)}g`;
 
     // Update progress bars
     els.proBar.style.width = `${Math.min(100, (totals.protein / GOALS.protein) * 100)}%`;
@@ -408,7 +454,7 @@ function updateUI() {
 
     // Update Chart
     if (chartInstance) {
-        chartInstance.data.datasets[0].data = [totals.calories, Math.max(0, GOALS.calories - totals.calories)];
+        chartInstance.data.datasets[0].data = [Math.round(totals.calories), Math.max(0, GOALS.calories - Math.round(totals.calories))];
         chartInstance.update();
     }
 }

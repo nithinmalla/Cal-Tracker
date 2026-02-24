@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet" defer></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="assets/icon.png">
     <link rel="manifest" href="manifest.json">
@@ -34,21 +36,6 @@
         </div>
     </header>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal hidden">
-        <div class="modal-content glass-card">
-            <h2>Settings</h2>
-            <div class="form-group">
-                <label for="apiKey">OpenAI API Key (Stored Locally)</label>
-                <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off">
-                <small style="color:var(--text-secondary); margin-top:4px; font-size:0.8rem;">Your key is stored only in
-                    your browser's localStorage. Never expose it in public repositories.</small>
-            </div>
-            <button id="saveSettingsBtn" class="primary-btn">Save</button>
-            <button id="closeSettingsBtn" class="secondary-btn">Close</button>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <main class="dashboard">
 
@@ -65,20 +52,42 @@
             </div>
             <div class="upload-actions">
                 <button id="analyzeBtn" class="primary-btn hidden">
-                    <span class="pulse-icon">🧠</span> Analyze Food
+                    <span class="pulse-icon">🔍</span> Identify Food
+                </button>
+                <button id="manualEntryBtn" class="secondary-btn">
+                    Enter food manually
                 </button>
             </div>
             <!-- Loading overlay -->
             <div id="loadingOverlay" class="loading-overlay hidden">
                 <div class="spinner"></div>
-                <p>Analyzing with AI...</p>
+                <p>Detecting with MobileNet...</p>
             </div>
+        </section>
+
+        <!-- Verification/Input Section -->
+        <section id="inputSection" class="input-section glass-card hidden">
+            <h2 id="foodNameTitle">Analyzing...</h2>
+            <p id="foodConfidence" class="subtitle" style="margin-bottom:8px;">-</p>
+
+            <div class="form-group">
+                <label for="manualFoodName" id="manualFoodLabel" class="hidden">Food Name:</label>
+                <input type="text" id="manualFoodName" class="hidden" placeholder="e.g. banana">
+            </div>
+
+            <div class="form-group" style="margin-bottom:24px;">
+                <label for="portionGrams">Enter portion size (grams):</label>
+                <input type="number" id="portionGrams" placeholder="e.g., 100" min="1" autocomplete="off">
+            </div>
+
+            <button id="calculateBtn" class="primary-btn">Calculate Nutrition</button>
+            <button id="cancelInputBtn" class="secondary-btn">Cancel</button>
         </section>
 
         <!-- Result Section -->
         <section id="resultSection" class="result-section glass-card hidden">
-            <h2 id="foodNameTitle">Analyzing...</h2>
-            <p id="foodQuantity" class="subtitle">Estimated portion: -</p>
+            <h2 id="resultTitle">Results</h2>
+            <p id="resultGrams" class="subtitle">For 100g</p>
 
             <div class="macro-cards">
                 <div class="macro-card cal">
@@ -104,7 +113,7 @@
             </div>
 
             <button id="logMealBtn" class="primary-btn">Log Meal</button>
-            <button id="cancelMealBtn" class="secondary-btn">Cancel</button>
+            <button id="cancelMealBtn" class="secondary-btn">Back</button>
         </section>
 
         <!-- Daily Summary Section -->
