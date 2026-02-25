@@ -32,6 +32,7 @@ const els = {
     manualFoodLabel: document.getElementById('manualFoodLabel'),
     manualFoodName: document.getElementById('manualFoodName'),
     portionGrams: document.getElementById('portionGrams'),
+    portionUnit: document.getElementById('portionUnit'),
     calculateBtn: document.getElementById('calculateBtn'),
     cancelInputBtn: document.getElementById('cancelInputBtn'),
 
@@ -388,15 +389,16 @@ function showManualEntry(message = "Enter food manually") {
 
 function calculateNutritionLocal() {
     let foodQuery = els.manualFoodName.value.trim().toLowerCase();
-    const grams = parseFloat(els.portionGrams.value);
+    const amount = parseFloat(els.portionGrams.value);
+    const unit = els.portionUnit.value;
 
     if (!foodQuery) {
         alert("Please provide a food name.");
         return;
     }
 
-    if (isNaN(grams) || grams <= 0) {
-        alert("Please enter a valid portion size in grams.");
+    if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid portion size.");
         return;
     }
 
@@ -421,8 +423,8 @@ function calculateNutritionLocal() {
         return;
     }
 
-    // Calculate macros based on grams
-    const multiplier = grams / 100;
+    // Calculate macros based on amount
+    const multiplier = amount / 100;
 
     const calResult = Math.round(matchedEntry.calories_per_100g * multiplier);
     const proResult = Math.round((matchedEntry.protein_per_100g * multiplier) * 10) / 10;
@@ -432,7 +434,7 @@ function calculateNutritionLocal() {
     // Show results
     showResult({
         food_name: dbKeyUsed.charAt(0).toUpperCase() + dbKeyUsed.slice(1),
-        estimated_quantity: `${grams}g`,
+        estimated_quantity: `${amount}${unit}`,
         calories: calResult,
         protein: proResult,
         carbs: carbResult,
