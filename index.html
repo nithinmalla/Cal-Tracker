@@ -189,6 +189,35 @@
             </div>
         </section>
 
+        <!-- History & Calendar Section -->
+        <section class="history-section glass-card">
+            <h2>History & Calendar</h2>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prevMonthBtn" class="icon-btn">&lt;</button>
+                    <h3 id="calendarMonth" style="margin: 0; font-weight: 500;">Month Year</h3>
+                    <button id="nextMonthBtn" class="icon-btn">&gt;</button>
+                </div>
+                <!-- CSS Grid with 7 columns -->
+                <div class="calendar-grid-header">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                </div>
+                <div id="calendarGrid" class="calendar-grid">
+                    <!-- Days injected via JS -->
+                </div>
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <div class="legend-color logged"></div>
+                        <span>Logged</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color protein-hit"></div>
+                        <span>Protein Goal Hit</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Log History Section -->
         <section class="log-section glass-card">
             <h2>Today's Meals</h2>

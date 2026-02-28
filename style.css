@@ -472,3 +472,107 @@ button {
 .form-group input:focus {
     border-color: var(--accent-primary);
 }
+
+/* Calendar Section */
+.history-section {
+    margin-bottom: 24px;
+}
+
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar-header h3 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.calendar-grid-header,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+
+.calendar-grid-header span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: var(--card-bg);
+    box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.calendar-day.empty {
+    background: transparent;
+    box-shadow: none;
+}
+
+.calendar-day.logged {
+    background: var(--macro-carb);
+    /* Subdued color for just logging */
+    color: white;
+    box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+    font-weight: 500;
+}
+
+.calendar-day.protein-hit {
+    background: var(--macro-pro);
+    /* Stronger color (accent) for hitting protein goal */
+    color: white;
+    box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+    font-weight: 600;
+}
+
+.calendar-day.today {
+    border: 2px solid var(--accent-primary);
+}
+
+.calendar-legend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-color.logged {
+    background: var(--macro-carb);
+}
+
+.legend-color.protein-hit {
+    background: var(--macro-pro);
+}

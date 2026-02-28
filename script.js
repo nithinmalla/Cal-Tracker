@@ -3,6 +3,8 @@ let localDB = {};
 
 // Application State
 let dailyLog = [];
+let calendarHistory = {}; // Format: { "YYYY-MM-DD": { calories: 0, protein: 0, carbs: 0, fat: 0 } }
+let currentMonth = new Date();
 let chartInstance = null;
 let currentPreviewBase64 = null;
 let currentAnalysis = null;
@@ -62,7 +64,13 @@ const els = {
     fatBar: document.getElementById('fatBar'),
     calChart: document.getElementById('calChart'),
 
-    mealList: document.getElementById('mealList')
+    mealList: document.getElementById('mealList'),
+
+    // Calendar Elements
+    calendarMonth: document.getElementById('calendarMonth'),
+    calendarGrid: document.getElementById('calendarGrid'),
+    prevMonthBtn: document.getElementById('prevMonthBtn'),
+    nextMonthBtn: document.getElementById('nextMonthBtn')
 };
 
 // Initialization
@@ -71,6 +79,7 @@ async function init() {
     loadState();
     checkMidnightReset();
     updateUI();
+    renderCalendar(currentMonth);
     setupEventListeners();
     initChart();
 }
@@ -93,18 +102,49 @@ function loadState() {
             dailyLog = [];
         }
     }
+
+    const savedHistory = localStorage.getItem('auracal_history');
+    if (savedHistory) {
+        try {
+            calendarHistory = JSON.parse(savedHistory);
+        } catch (e) {
+            calendarHistory = {};
+        }
+    }
 }
 
 function saveState() {
     localStorage.setItem('auracal_log', JSON.stringify(dailyLog));
-    localStorage.setItem('auracal_last_date', new Date().toDateString());
+
+    // Update current day in history based on current daily log
+    const todayStr = new Date().toISOString().split('T')[0];
+    let dailyTotals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    dailyLog.forEach(meal => {
+        dailyTotals.calories += meal.calories;
+        dailyTotals.protein += meal.protein;
+        dailyTotals.carbs += meal.carbs;
+        dailyTotals.fat += meal.fat;
+    });
+
+    if (dailyLog.length > 0) {
+        calendarHistory[todayStr] = dailyTotals;
+    } else {
+        delete calendarHistory[todayStr]; // If logs were deleted
+    }
+
+    localStorage.setItem('auracal_history', JSON.stringify(calendarHistory));
+    localStorage.setItem('auracal_last_date', todayStr);
+
     updateUI();
+    renderCalendar(currentMonth); // Refresh calendar to show changes
 }
 
 function checkMidnightReset() {
     const lastDate = localStorage.getItem('auracal_last_date');
-    const today = new Date().toDateString();
-    if (lastDate && lastDate !== today) {
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    if (lastDate && lastDate !== todayStr) {
+        // We do not need to push to history here because saveState keeps it updated in real-time
         dailyLog = [];
         saveState();
     }
@@ -197,6 +237,17 @@ function setupEventListeners() {
                 saveState();
             }
         }
+    });
+
+    // Calendar Navigation
+    els.prevMonthBtn.addEventListener('click', () => {
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        renderCalendar(currentMonth);
+    });
+
+    els.nextMonthBtn.addEventListener('click', () => {
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        renderCalendar(currentMonth);
     });
 }
 
@@ -519,6 +570,57 @@ function updateUI() {
     if (chartInstance) {
         chartInstance.data.datasets[0].data = [Math.round(totals.calories), Math.max(0, GOALS.calories - Math.round(totals.calories))];
         chartInstance.update();
+    }
+}
+
+function renderCalendar(date) {
+    els.calendarGrid.innerHTML = '';
+
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    els.calendarMonth.textContent = `${monthNames[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Empty cells for days before the 1st
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.classList.add('calendar-day', 'empty');
+        els.calendarGrid.appendChild(emptyDiv);
+    }
+
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+    const currentDay = today.getDate();
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day');
+        dayDiv.textContent = i;
+
+        // Construct string YYYY-MM-DD
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+
+        // Highlight today
+        if (isCurrentMonth && i === currentDay) {
+            dayDiv.classList.add('today');
+        }
+
+        // Evaluate history
+        if (calendarHistory[dateStr]) {
+            const dayData = calendarHistory[dateStr];
+
+            if (dayData.protein >= GOALS.protein) {
+                dayDiv.classList.add('protein-hit');
+            } else {
+                dayDiv.classList.add('logged');
+            }
+        }
+
+        els.calendarGrid.appendChild(dayDiv);
     }
 }
 
