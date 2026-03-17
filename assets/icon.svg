@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="#121212"/>
+  <circle cx="256" cy="256" r="230" fill="#1a1a1a"/>
+  <circle cx="256" cy="256" r="140" fill="#1e1e1e"/>
+
+  <!-- Background track ring -->
+  <circle cx="256" cy="256" r="119"
+    stroke="#555"
+    stroke-width="28"
+    fill="none"
+    stroke-linecap="round"
+    opacity="0.5"/>
+
+  <!-- Progress ring (~84% filled) -->
+  <circle cx="256" cy="256" r="119"
+    stroke="#ffffff"
+    stroke-width="28"
+    fill="none"
+    stroke-linecap="round"
+    stroke-dasharray="750"
+    stroke-dashoffset="120"/>
+
+  <!-- Fork icon -->
+  <g fill="#ffffff">
+    <!-- Prongs -->
+    <rect x="230" y="150" width="12" height="70" rx="6"/>
+    <rect x="250" y="150" width="12" height="70" rx="6"/>
+    <rect x="270" y="150" width="12" height="70" rx="6"/>
+    <!-- Tine arch connecting prongs to handle -->
+    <path d="M230,220 C230,240 244,244 246,244 L266,244 C268,244 282,240 282,220 L270,220 C270,234 266,236 264,236 L248,236 C246,236 242,234 242,220 Z"/>
+    <!-- Handle body -->
+    <rect x="246" y="244" width="20" height="100" rx="8"/>
+    <!-- Handle lower grip -->
+    <rect x="243" y="338" width="26" height="14" rx="7"/>
+    <!-- Handle cap -->
+    <rect x="246" y="350" width="20" height="10" rx="5"/>
+  </g>
+</svg>
