@@ -12,6 +12,48 @@
     --macro-carb: #a0aec0;
     --macro-fat: #718096;
     --font-main: 'Outfit', sans-serif;
+    --chart-remaining: #e2e8f0;
+    --loading-bg: rgba(240, 242, 245, 0.9);
+}
+
+[data-theme="dark"] {
+    --bg-dark: #1a1a2e;
+    --card-bg: #1a1a2e;
+    --shadow-light: #222240;
+    --shadow-dark: #12121f;
+    --accent-primary: #7c6fe0;
+    --accent-dark: #6358c7;
+    --text-primary: #e2e8f0;
+    --text-secondary: #8892a6;
+    --danger: #fc5c65;
+    --macro-pro: #7c6fe0;
+    --macro-carb: #63b3ed;
+    --macro-fat: #a78bfa;
+    --font-main: 'Outfit', sans-serif;
+    --chart-remaining: #2d2d4a;
+    --loading-bg: rgba(26, 26, 46, 0.92);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background: transparent;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: none;
+    width: 36px;
+    height: 36px;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.15);
+    box-shadow: none;
 }
 
 * {
@@ -31,6 +73,7 @@ body {
     align-items: center;
     background-image: none;
     background-attachment: scroll;
+    transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 .hidden {
@@ -210,7 +253,7 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(240, 242, 245, 0.9);
+    background: var(--loading-bg);
     backdrop-filter: blur(4px);
     display: flex;
     flex-direction: column;

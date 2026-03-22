@@ -70,11 +70,69 @@ const els = {
     calendarMonth: document.getElementById('calendarMonth'),
     calendarGrid: document.getElementById('calendarGrid'),
     prevMonthBtn: document.getElementById('prevMonthBtn'),
-    nextMonthBtn: document.getElementById('nextMonthBtn')
+    nextMonthBtn: document.getElementById('nextMonthBtn'),
+
+    // Theme & Settings
+    themeToggle: document.getElementById('themeToggle'),
+    settingsBtn: document.getElementById('settingsBtn'),
+    settingsModal: document.getElementById('settingsModal'),
+    closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+    themeLabelLight: document.getElementById('themeLabelLight'),
+    themeLabelDark: document.getElementById('themeLabelDark')
 };
+
+// Theme
+function initTheme() {
+    const saved = localStorage.getItem('auracal_theme');
+    let theme;
+    if (saved) {
+        theme = saved;
+    } else {
+        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    applyTheme(theme);
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Update labels in settings
+    if (theme === 'dark') {
+        els.themeLabelDark.style.color = 'var(--text-primary)';
+        els.themeLabelDark.style.fontWeight = '600';
+        els.themeLabelLight.style.color = 'var(--text-secondary)';
+        els.themeLabelLight.style.fontWeight = 'normal';
+    } else {
+        els.themeLabelLight.style.color = 'var(--text-primary)';
+        els.themeLabelLight.style.fontWeight = '600';
+        els.themeLabelDark.style.color = 'var(--text-secondary)';
+        els.themeLabelDark.style.fontWeight = 'normal';
+    }
+
+    // Update meta theme-color
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) {
+        metaTheme.setAttribute('content', theme === 'dark' ? '#1a1a2e' : '#f0f2f5');
+    }
+    // Update Chart.js colors if chart already exists
+    if (chartInstance) {
+        const style = getComputedStyle(document.documentElement);
+        chartInstance.data.datasets[0].backgroundColor = [
+            style.getPropertyValue('--accent-primary').trim(),
+            style.getPropertyValue('--chart-remaining').trim()
+        ];
+        chartInstance.update();
+    }
+}
+
+function setTheme(theme) {
+    localStorage.setItem('auracal_theme', theme);
+    applyTheme(theme);
+}
 
 // Initialization
 async function init() {
+    initTheme();
     await loadLocalDB();
     loadState();
     checkMidnightReset();
@@ -236,6 +294,25 @@ function setupEventListeners() {
                 dailyLog = dailyLog.filter(meal => meal.id !== id);
                 saveState();
             }
+        }
+    });
+
+    // Theme Setting via Labels
+    els.themeLabelLight.addEventListener('click', () => setTheme('light'));
+    els.themeLabelDark.addEventListener('click', () => setTheme('dark'));
+
+    // Settings Modal
+    els.settingsBtn.addEventListener('click', () => {
+        els.settingsModal.classList.remove('hidden');
+    });
+
+    els.closeSettingsBtn.addEventListener('click', () => {
+        els.settingsModal.classList.add('hidden');
+    });
+
+    els.settingsModal.addEventListener('click', (e) => {
+        if (e.target === els.settingsModal) {
+            els.settingsModal.classList.add('hidden');
         }
     });
 
@@ -637,7 +714,10 @@ function initChart() {
             labels: ['Consumed', 'Remaining'],
             datasets: [{
                 data: [0, GOALS.calories],
-                backgroundColor: ['#2e2842', '#e2e8f0'],
+                backgroundColor: [
+                    getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim(),
+                    getComputedStyle(document.documentElement).getPropertyValue('--chart-remaining').trim()
+                ],
                 borderWidth: 0,
                 borderRadius: 4,
                 cutout: '80%'
